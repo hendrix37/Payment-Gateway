@@ -10,8 +10,8 @@ class CreateBankRequest extends FormRequest
     {
         return [
             'uuid' => ['required', 'string'],
-			'name' => ['required', 'string'],
-			'code' => ['nullable', 'string'],
+            'name' => ['required', 'string'],
+            'code' => ['nullable', 'string'],
         ];
     }
 }

@@ -10,8 +10,8 @@ class UpdateBankRequest extends FormRequest
     {
         return [
             'uuid' => ['sometimes', 'string'],
-			'name' => ['sometimes', 'string'],
-			'code' => ['sometimes', 'string'],
+            'name' => ['sometimes', 'string'],
+            'code' => ['sometimes', 'string'],
         ];
     }
 }

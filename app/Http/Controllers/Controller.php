@@ -15,12 +15,11 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Config;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests;
     use ApiResponse;
+    use AuthorizesRequests, ValidatesRequests;
 
     private $secret;
 
@@ -30,7 +29,7 @@ class Controller extends BaseController
     {
         $this->secret = env('FLIP_SECRET_KEY');
 
-        $encoded_auth = base64_encode($this->secret . ":");
+        $encoded_auth = base64_encode($this->secret.':');
 
         $this->authorization = "Basic $encoded_auth";
     }
@@ -38,9 +37,8 @@ class Controller extends BaseController
     /**
      * Return a success response.
      *
-     * @param string|null $title Title of Transaction.
-     * @param integer|null $amount amount of transaction.
-     *
+     * @param  string|null  $title Title of Transaction.
+     * @param  int|null  $amount amount of transaction.
      */
     public function createBill($title, $amount)
     {
@@ -53,31 +51,31 @@ class Controller extends BaseController
                 'title' => $title,
                 'amount' => $amount,
                 'type' => 'SINGLE',
-                "expired_date" => Carbon::now()->addDay()->format('Y-m-d H:m'),
+                'expired_date' => Carbon::now()->addDay()->format('Y-m-d H:m'),
                 'redirect_url' => 'https://farel.com',
                 'is_address_required' => 0,
-                'is_phone_number_required' => 0
+                'is_phone_number_required' => 0,
             ];
-            Log::channel('transaction')->info("Data Send : " . json_encode($data));
+            Log::channel('transaction')->info('Data Send : '.json_encode($data));
 
             $response = Http::withHeaders([
-                'Authorization' => $this->authorization
+                'Authorization' => $this->authorization,
             ])->post('https://bigflip.id/big_sandbox_api/v2/pwf/bill', $data);
 
             $responseData = json_decode($response->body(), true); // Decode JSON response
 
-            Log::channel('transaction')->info("Response : " . $response->body());
+            Log::channel('transaction')->info('Response : '.$response->body());
 
             return $responseData;
         } catch (Exception $th) {
-            Log::channel('transaction')->info("Error : " . $th->getMessage());
+            Log::channel('transaction')->info('Error : '.$th->getMessage());
         }
-        Log::channel('transaction')->info("End");
+        Log::channel('transaction')->info('End');
     }
 
     public function get_saldo_customer($identity_owner): JsonResponse
     {
-        return  DB::table('transactions')
+        return DB::table('transactions')
             ->where('identity_owner', $identity_owner)
             ->where('status', StatusTypes::SUCCESSFUL)
             ->selectRaw('SUM(CASE 

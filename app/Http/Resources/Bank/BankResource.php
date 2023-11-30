@@ -11,8 +11,8 @@ class BankResource extends JsonResource
         return [
             'id' => $this->id,
             'uuid' => $this->uuid,
-			'name' => $this->name,
-			'code' => $this->code,
+            'name' => $this->name,
+            'code' => $this->code,
             'created_at' => dateTimeFormat($this->created_at),
             'updated_at' => dateTimeFormat($this->updated_at),
         ];

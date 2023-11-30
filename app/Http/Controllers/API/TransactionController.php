@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Enums\ActionTypes;
 use App\Enums\StatusTypes;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Requests\Transaction\CreateTransactionRequest;
+use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
@@ -70,14 +70,13 @@ class TransactionController extends Controller
 
             $type = 'pay';
 
-            $title = "PAY/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "PAY/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
             $identity_driver = $request->idwork;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
-
 
             $saldo = DB::table('transactions')
                 ->where('identity_owner', $identity_owner)
@@ -113,9 +112,10 @@ class TransactionController extends Controller
                 ->value('saldo');
 
             $data = [
-                "amount" => $amount,
-                "saldo" => $saldo
+                'amount' => $amount,
+                'saldo' => $saldo,
             ];
+
             return $this->responseSuccess('Pay Transaction Success', $data);
         } catch (Exception $th) {
             //throw $th;
@@ -138,7 +138,7 @@ class TransactionController extends Controller
 
             $type = 'top_up';
 
-            $title = "TOPUP/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "TOPUP/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -169,16 +169,16 @@ class TransactionController extends Controller
 
             DB::commit();
 
-
             $saldo = DB::table('transactions')
                 ->where('identity_owner', $identity_owner)
                 ->selectRaw('SUM(CASE WHEN type = "top_up" THEN amount ELSE -amount END) as saldo')
                 ->value('saldo');
 
             $data = [
-                "amount" => $amount,
-                "saldo" => $saldo
+                'amount' => $amount,
+                'saldo' => $saldo,
             ];
+
             return $this->responseSuccess('Pay Transaction Success', $data);
         } catch (Exception $th) {
             //throw $th;
@@ -195,10 +195,9 @@ class TransactionController extends Controller
 
             $response = request()->data;
 
-
             $data = json_decode($response);
-            
-            Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
+
+            Log::channel('transaction')->info("Transaction ID $data->id : ".json_encode($request->all()));
 
             $data_update = [
                 'json_callback' => $response,

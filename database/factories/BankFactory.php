@@ -10,8 +10,8 @@ class BankFactory extends Factory
     {
         return [
             'uuid' => $this->faker->firstName(),
-			'name' => $this->faker->firstName(),
-			'code' => $this->faker->firstName(),
+            'name' => $this->faker->firstName(),
+            'code' => $this->faker->firstName(),
         ];
     }
 }

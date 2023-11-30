@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Bank\UpdateBankRequest;
 use App\Http\Requests\Bank\CreateBankRequest;
+use App\Http\Requests\Bank\UpdateBankRequest;
 use App\Http\Resources\Bank\BankResource;
 use App\Models\Bank;
 use Illuminate\Http\JsonResponse;
@@ -49,6 +49,4 @@ class DriverTransactionController extends Controller
 
         return $this->responseDeleted();
     }
-
-   
 }

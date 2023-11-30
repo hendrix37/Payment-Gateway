@@ -10,11 +10,11 @@ class UpdateTransactionHistoryRequest extends FormRequest
     {
         return [
             'uuid' => ['sometimes', 'string'],
-			'json_before_value' => ['sometimes', 'string'],
-			'json_after_value' => ['sometimes', 'string'],
-			'action' => ['sometimes', 'in:cerated,updated,deleted'],
-			'transaction_id' => ['sometimes'],
-			'status_transaction' => ['sometimes', 'string'],
+            'json_before_value' => ['sometimes', 'string'],
+            'json_after_value' => ['sometimes', 'string'],
+            'action' => ['sometimes', 'in:cerated,updated,deleted'],
+            'transaction_id' => ['sometimes'],
+            'status_transaction' => ['sometimes', 'string'],
         ];
     }
 }

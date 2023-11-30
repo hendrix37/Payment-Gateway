@@ -6,9 +6,6 @@ use App\Enums\ActionTypes;
 use App\Enums\StatusTypes;
 use App\Enums\TransactionTypes;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Bank\UpdateBankRequest;
-use App\Http\Requests\Bank\CreateBankRequest;
-use App\Http\Resources\Bank\BankResource;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Models\Bank;
 use App\Models\Transaction;
@@ -18,7 +15,6 @@ use Essa\APIToolKit\Filters\DTO\FiltersDTO;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
 class CustomerTransactionController extends Controller
@@ -33,7 +29,7 @@ class CustomerTransactionController extends Controller
 
         $data = [
             'saldo' => $saldo,
-            'idowner' => $request->idowner
+            'idowner' => $request->idowner,
         ];
 
         return $this->responseSuccess('Get Saldo', $data);
@@ -52,7 +48,7 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::TOPUP;
 
-            $title = "$type/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "$type/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -95,10 +91,11 @@ class CustomerTransactionController extends Controller
             $saldo = Transaction::saldoCustomer($identity_owner);
 
             $data = [
-                "link_payment" => $response_flip['link_url'],
-                "amount" => $amount,
-                "saldo" => $saldo
+                'link_payment' => $response_flip['link_url'],
+                'amount' => $amount,
+                'saldo' => $saldo,
             ];
+
             return $this->responseSuccess('Top Up Transaction Success', $data);
         } catch (Exception $th) {
             //throw $th;
@@ -121,7 +118,7 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::PAY;
 
-            $title = "$type/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "$type/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -157,8 +154,8 @@ class CustomerTransactionController extends Controller
             $saldo = Transaction::saldoCustomer($identity_owner);
 
             $data = [
-                "amount" => $amount,
-                "saldo" => $saldo
+                'amount' => $amount,
+                'saldo' => $saldo,
             ];
 
             return $this->responseSuccess('Pay Transaction Success', $data);

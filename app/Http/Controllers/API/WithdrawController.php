@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Withdraw\UpdateWithdrawRequest;
 use App\Http\Requests\Withdraw\CreateWithdrawRequest;
+use App\Http\Requests\Withdraw\UpdateWithdrawRequest;
 use App\Http\Resources\Withdraw\WithdrawResource;
 use App\Models\Withdraw;
 use Illuminate\Http\JsonResponse;
@@ -49,6 +49,4 @@ class WithdrawController extends Controller
 
         return $this->responseDeleted();
     }
-
-   
 }

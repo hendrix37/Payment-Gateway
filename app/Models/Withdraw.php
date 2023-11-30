@@ -8,10 +8,9 @@ use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 class Withdraw extends Model
 {
-    use HasFactory, Filterable, Uuid;
+    use Filterable, HasFactory, Uuid;
 
     protected string $default_filters = WithdrawFilters::class;
 
@@ -22,13 +21,11 @@ class Withdraw extends Model
      */
     protected $fillable = [
         'uuid',
-		'json_request',
-		'account_number',
-		'bank_code',
-		'amount',
-		'remark',
-		'idempotency',
+        'json_request',
+        'account_number',
+        'bank_code',
+        'amount',
+        'remark',
+        'idempotency',
     ];
-
-
 }

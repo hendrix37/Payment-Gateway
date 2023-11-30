@@ -10,11 +10,11 @@ class CreateTransactionHistoryRequest extends FormRequest
     {
         return [
             'uuid' => ['required', 'string'],
-			'json_before_value' => ['nullable', 'string'],
-			'json_after_value' => ['required', 'string'],
-			'action' => ['required', 'in:cerated,updated,deleted'],
-			'transaction_id' => ['required'],
-			'status_transaction' => ['nullable', 'string'],
+            'json_before_value' => ['nullable', 'string'],
+            'json_after_value' => ['required', 'string'],
+            'action' => ['required', 'in:cerated,updated,deleted'],
+            'transaction_id' => ['required'],
+            'status_transaction' => ['nullable', 'string'],
         ];
     }
 }

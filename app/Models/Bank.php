@@ -8,10 +8,9 @@ use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 class Bank extends Model
 {
-    use HasFactory, Filterable, Uuid;
+    use Filterable, HasFactory, Uuid;
 
     protected string $default_filters = BankFilters::class;
 

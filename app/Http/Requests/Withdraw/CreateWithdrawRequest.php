@@ -10,12 +10,12 @@ class CreateWithdrawRequest extends FormRequest
     {
         return [
             'uuid' => ['required', 'string'],
-			'json_request' => ['required', 'string'],
-			'account_number' => ['required', 'string'],
-			'bank_code' => ['required', 'string'],
-			'amount' => ['required', 'numeric'],
-			'remark' => ['nullable', 'string'],
-			'idempotency' => ['required', 'string'],
+            'json_request' => ['required', 'string'],
+            'account_number' => ['required', 'string'],
+            'bank_code' => ['required', 'string'],
+            'amount' => ['required', 'numeric'],
+            'remark' => ['nullable', 'string'],
+            'idempotency' => ['required', 'string'],
         ];
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TransactionHistory\UpdateTransactionHistoryRequest;
 use App\Http\Requests\TransactionHistory\CreateTransactionHistoryRequest;
+use App\Http\Requests\TransactionHistory\UpdateTransactionHistoryRequest;
 use App\Http\Resources\TransactionHistory\TransactionHistoryResource;
 use App\Models\TransactionHistory;
 use Illuminate\Http\JsonResponse;
@@ -49,6 +49,4 @@ class TransactionHistoryController extends Controller
 
         return $this->responseDeleted();
     }
-
-   
 }

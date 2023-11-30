@@ -8,10 +8,9 @@ use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 class TransactionHistory extends Model
 {
-    use HasFactory, Filterable, Uuid;
+    use Filterable, HasFactory, Uuid;
 
     protected string $default_filters = TransactionHistoryFilters::class;
 
@@ -22,16 +21,15 @@ class TransactionHistory extends Model
      */
     protected $fillable = [
         'uuid',
-		'json_before_value',
-		'json_after_value',
-		'action',
-		'transaction_id',
-		'status_transaction',
+        'json_before_value',
+        'json_after_value',
+        'action',
+        'transaction_id',
+        'status_transaction',
     ];
 
-	public function transaction(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Transaction::class);
-	}
-
+    public function transaction(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Transaction::class);
+    }
 }

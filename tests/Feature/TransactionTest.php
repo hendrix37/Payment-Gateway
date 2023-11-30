@@ -2,16 +2,17 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class TransactionTest extends TestCase
 {
-    use  RefreshDatabase;
+    use RefreshDatabase;
 
     protected string $endpoint = '/api/transactions';
+
     protected string $tableName = 'transactions';
 
     public function setUp(): void
@@ -28,8 +29,8 @@ class TransactionTest extends TestCase
         $payload = Transaction::factory()->make([])->toArray();
 
         $this->json('POST', $this->endpoint, $payload)
-             ->assertStatus(201)
-             ->assertSee($payload['name']);
+            ->assertStatus(201)
+            ->assertSee($payload['name']);
 
         $this->assertDatabaseHas($this->tableName, ['id' => 1]);
     }
@@ -43,9 +44,9 @@ class TransactionTest extends TestCase
         Transaction::factory(5)->create();
 
         $this->json('GET', $this->endpoint)
-             ->assertStatus(200)
-             ->assertJsonCount(5, 'data')
-             ->assertSee(Transaction::first(rand(1, 5))->name);
+            ->assertStatus(200)
+            ->assertJsonCount(5, 'data')
+            ->assertSee(Transaction::first(rand(1, 5))->name);
     }
 
     public function testViewAllTransactionsByFooFilter(): void
@@ -57,9 +58,9 @@ class TransactionTest extends TestCase
         Transaction::factory(5)->create();
 
         $this->json('GET', $this->endpoint.'?foo=1')
-             ->assertStatus(200)
-             ->assertSee('foo')
-             ->assertDontSee('foo');
+            ->assertStatus(200)
+            ->assertSee('foo')
+            ->assertDontSee('foo');
     }
 
     public function testsCreateTransactionValidation(): void
@@ -72,7 +73,7 @@ class TransactionTest extends TestCase
         ];
 
         $this->json('post', $this->endpoint, $data)
-             ->assertStatus(422);
+            ->assertStatus(422);
     }
 
     public function testViewTransactionData(): void
@@ -84,8 +85,8 @@ class TransactionTest extends TestCase
         Transaction::factory()->create();
 
         $this->json('GET', $this->endpoint.'/1')
-             ->assertSee(Transaction::first()->name)
-             ->assertStatus(200);
+            ->assertSee(Transaction::first()->name)
+            ->assertStatus(200);
     }
 
     public function testUpdateTransaction(): void
@@ -97,12 +98,12 @@ class TransactionTest extends TestCase
         Transaction::factory()->create();
 
         $payload = [
-            'name' => 'Random'
+            'name' => 'Random',
         ];
 
         $this->json('PUT', $this->endpoint.'/1', $payload)
-             ->assertStatus(200)
-             ->assertSee($payload['name']);
+            ->assertStatus(200)
+            ->assertSee($payload['name']);
     }
 
     public function testDeleteTransaction(): void
@@ -114,9 +115,8 @@ class TransactionTest extends TestCase
         Transaction::factory()->create();
 
         $this->json('DELETE', $this->endpoint.'/1')
-             ->assertStatus(204);
+            ->assertStatus(204);
 
         $this->assertEquals(0, Transaction::count());
     }
-    
 }

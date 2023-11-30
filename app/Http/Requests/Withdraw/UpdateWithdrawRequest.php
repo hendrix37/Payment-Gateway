@@ -10,12 +10,12 @@ class UpdateWithdrawRequest extends FormRequest
     {
         return [
             'uuid' => ['sometimes', 'string'],
-			'json_request' => ['sometimes', 'string'],
-			'account_number' => ['sometimes', 'string'],
-			'bank_code' => ['sometimes', 'string'],
-			'amount' => ['sometimes', 'numeric'],
-			'remark' => ['sometimes', 'string'],
-			'idempotency' => ['sometimes', 'string'],
+            'json_request' => ['sometimes', 'string'],
+            'account_number' => ['sometimes', 'string'],
+            'bank_code' => ['sometimes', 'string'],
+            'amount' => ['sometimes', 'numeric'],
+            'remark' => ['sometimes', 'string'],
+            'idempotency' => ['sometimes', 'string'],
         ];
     }
 }
