@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\CustomerTransactionController;
+use App\Http\Controllers\API\DriverTransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,8 +34,27 @@ Route::apiResource('/banks', \App\Http\Controllers\API\BankController::class);
 =============================*/
 
 Route::apiResource('/transactions', \App\Http\Controllers\API\TransactionController::class);
-Route::post('/transaction/pay', [\App\Http\Controllers\API\TransactionController::class, 'pay']);
-Route::post('/transaction/top_up', [\App\Http\Controllers\API\TransactionController::class, 'top_up']);
+
+// Route::post('/transaction/pay', [\App\Http\Controllers\API\TransactionController::class, 'pay']);
+// Route::post('/transaction/top_up', [\App\Http\Controllers\API\TransactionController::class, 'top_up']);
+
+Route::prefix('driver')->group(function () {
+    Route::post('saldo', [DriverTransactionController::class, 'saldo'])->name('get-saldo.driver');
+    Route::post('top-up', [DriverTransactionController::class, 'top_up'])->name('top-up.driver');
+    Route::post('pay', [DriverTransactionController::class, 'pay'])->name('pay.driver');
+    Route::post('withdraw', [DriverTransactionController::class, 'withdraw'])->name('withdraw.driver');
+    Route::post('history', [DriverTransactionController::class, 'history'])->name('history.driver');
+    Route::post('add-bank-account', [DriverTransactionController::class, 'add_bank_account'])->name('add-bank-account.driver');
+});
+
+Route::prefix('customer')->group(function () {
+    Route::post('saldo', [CustomerTransactionController::class, 'saldo'])->name('get-saldo.customer');
+    Route::post('top-up', [CustomerTransactionController::class, 'top_up'])->name('top-up.customer');
+    Route::post('pay', [CustomerTransactionController::class, 'pay'])->name('pay.customer');
+    Route::post('withdraw', [CustomerTransactionController::class, 'withdraw'])->name('withdraw.customer');
+    Route::post('history', [CustomerTransactionController::class, 'history'])->name('history.customer');
+    Route::post('add-bank-account', [CustomerTransactionController::class, 'add_bank_account'])->name('add-bank-account.customer');
+});
 
 /*=====  End of transactions   ======*/
 

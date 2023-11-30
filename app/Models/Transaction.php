@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusTypes;
 use App\Filters\TransactionFilters;
 use App\Traits\Uuid;
 use Essa\APIToolKit\Filters\Filterable;
@@ -22,6 +23,7 @@ class Transaction extends Model
 	 */
 	protected $fillable = [
 		'uuid',
+		'transaction_number',
 		'json_request',
 		'json_response_payment_gateway',
 		'payement_gateway',
@@ -45,6 +47,20 @@ class Transaction extends Model
 
 	public function histories(): HasMany
 	{
-		return $this->HasMany(\App\Models\TransactionHistory::class);
+		return $this->HasMany(\App\Models\TransactionHistory::class)->orderBy('created_at', 'desc');
+	}
+
+	public function scopeSaldoCustomer($query, $id_owner)
+	{
+		$saldo = $query->where('identity_owner', $id_owner)
+			->where('status', StatusTypes::SUCCESSFUL)
+			->selectRaw('SUM(CASE 
+							WHEN type = "top_up" THEN amount 
+							WHEN type = "pay" AND additional_cost IS NOT NULL THEN -amount - additional_cost 
+							ELSE -amount 
+						END) as saldo')
+			->value('saldo');
+			
+		return $saldo ?? 0;
 	}
 }

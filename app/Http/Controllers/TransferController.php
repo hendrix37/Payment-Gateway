@@ -63,7 +63,6 @@ class TransferController extends Controller
 
             $responseInquiry = $requestInquiry->object();
         } while ($responseInquiry->status == 'PENDING');
-        dd($responseInquiry);
 
         // If Account Inquiry SUCCESS
         if ($responseInquiry->status == 'SUCCESS') {

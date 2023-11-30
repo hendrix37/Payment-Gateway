@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StatusTypes;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Essa\APIToolKit\Api\ApiResponse;
 use Exception;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
@@ -37,11 +39,10 @@ class Controller extends BaseController
      * Return a success response.
      *
      * @param string|null $title Title of Transaction.
-     * @param string|null $type Type of Transaction top_up or pay.
      * @param integer|null $amount amount of transaction.
      *
      */
-    public function createBill($title, $type, $amount)
+    public function createBill($title, $amount)
     {
         Log::channel('transaction')->info('Start');
 
@@ -67,11 +68,23 @@ class Controller extends BaseController
 
             Log::channel('transaction')->info("Response : " . $response->body());
 
-            return $responseData; // Return JSON response
-
+            return $responseData;
         } catch (Exception $th) {
             Log::channel('transaction')->info("Error : " . $th->getMessage());
         }
         Log::channel('transaction')->info("End");
+    }
+
+    public function get_saldo_customer($identity_owner): JsonResponse
+    {
+        return  DB::table('transactions')
+            ->where('identity_owner', $identity_owner)
+            ->where('status', StatusTypes::SUCCESSFUL)
+            ->selectRaw('SUM(CASE 
+                            WHEN type = "top_up" THEN amount 
+                            WHEN type = "pay" AND additional_cost IS NOT NULL THEN -amount - additional_cost 
+                            ELSE -amount 
+                        END) as saldo')
+            ->value('saldo');
     }
 }

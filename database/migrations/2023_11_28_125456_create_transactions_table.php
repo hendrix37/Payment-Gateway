@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\StatusTypes;
+use App\Enums\TransactionTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,6 +18,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
+            $table->string('transaction_number')->required();
             $table->text('json_request')->required();
             $table->text('json_response_payment_gateway')->nullable();
             $table->string('payement_gateway')->required();
@@ -26,8 +29,8 @@ return new class extends Migration
             $table->string('link_payment')->nullable();
             $table->string('identity_owner')->nullable();
             $table->string('identity_driver')->nullable();
-            $table->string('status')->nullable();
-            $table->string('type')->nullable();
+            $table->enum('status', StatusTypes::getAll())->nullable();
+            $table->enum('type', TransactionTypes::getAll())->nullable();
             $table->text('code_payment_gateway_relation')->nullable();
             $table->text('json_callback')->nullable();
 

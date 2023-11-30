@@ -18,6 +18,12 @@ use App\Traits\PaymentGatewayFlip;
 |
 */
 
+Route::get('/test', function () {
+    $string = 'hendrix' . env('APP_KEY');
+    $base64_encode = base64_encode($string);
+    $base64_decode = base64_decode($base64_encode);
+    dd($base64_encode, $base64_decode);
+});
 Route::get('/', [TransactionController::class, 'test']);
 
 

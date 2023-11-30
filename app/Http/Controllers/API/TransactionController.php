@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\ActionTypes;
+use App\Enums\StatusTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Requests\Transaction\CreateTransactionRequest;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Models\Transaction;
+use App\Models\TransactionHistory;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -146,6 +150,7 @@ class TransactionController extends Controller
             $response_flip = $flip->createBill($title, $type, $total_amount);
 
             $data = [
+                'transaction_number' => $title,
                 'json_request' => json_encode($request->all()),
                 'json_response_payment_gateway' => json_encode($response_flip),
                 'payement_gateway' => 'flip',
@@ -180,6 +185,56 @@ class TransactionController extends Controller
             DB::rollBack();
 
             return $this->responseBadRequest($th->getMessage(), 'Pay Transaction Error');
+        }
+    }
+
+    public function callback(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $response = request()->data;
+
+
+            $data = json_decode($response);
+            
+            Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
+
+            $data_update = [
+                'json_callback' => $response,
+            ];
+
+            if ($data->status != 'SUCCESSFUL') {
+                $data_update['status'] = StatusTypes::SUCCESSFUL;
+            } elseif ($data->status != 'CANCELLED') {
+                $data_update['status'] = StatusTypes::CANCELLED;
+            } elseif ($data->status != 'FAILED') {
+                $data_update['status'] = StatusTypes::FAILED;
+            }
+
+            $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
+
+            if ($transaction) {
+                $update = Transaction::where('id', $transaction->id)->update($data_update);
+
+                if ($update) {
+                    // Create a new transaction history record
+                    TransactionHistory::create([
+                        'json_before_value' => json_encode($transaction),
+                        'json_after_value' => json_encode($data_update), // Assuming $data_update is the updated data
+                        'action' => ActionTypes::UPDATED, // You may need to specify the action type (e.g., update, create, delete)
+                        'transaction_id' => $transaction->id,
+                        'status_transaction' => $data_update['status'], // Adjust accordingly based on your transaction model
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $this->responseSuccess($update);
+        } catch (Exception $th) {
+            //throw $th;
+            DB::rollBack();
         }
     }
 }
