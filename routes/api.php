@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CustomerTransactionController;
 use App\Http\Controllers\API\DriverTransactionController;
+use App\Http\Controllers\API\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,10 @@ Route::prefix('customer')->group(function () {
     Route::post('withdraw', [CustomerTransactionController::class, 'withdraw'])->name('withdraw.customer');
     Route::post('history', [CustomerTransactionController::class, 'history'])->name('history.customer');
     Route::post('add-bank-account', [CustomerTransactionController::class, 'add_bank_account'])->name('add-bank-account.customer');
+});
+
+Route::prefix('callback')->group(function () {
+    Route::post('transaction', [TransactionController::class, 'callback'])->name('transaction.callback');
 });
 
 /*=====  End of transactions   ======*/
