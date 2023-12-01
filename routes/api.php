@@ -58,7 +58,7 @@ Route::prefix('customer')->group(function () {
 
 Route::prefix('callback')->group(function () {
     Route::post('accept-payment', [TransactionController::class, 'callback_accept_payment'])->name('accept_payment.callback');
-    Route::post('transaction', [TransactionController::class, 'callback_transaksi'])->name('transaction.callback');
+    Route::post('transaction', [TransactionController::class, 'callback_transaction'])->name('transaction.callback');
     Route::post('inquiry', [TransactionController::class, 'callback_inquiry'])->name('inquiry.callback');
 });
 
