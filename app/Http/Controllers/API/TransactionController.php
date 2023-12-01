@@ -216,7 +216,7 @@ class TransactionController extends Controller
 
             $data_update['bank_id'] = $bank->id;
 
-            $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
+            $transaction = Transaction::where('code_payment_gateway_relation', $data->bill_link_id)->first();
 
             if ($transaction) {
                 $update = Transaction::where('id', $transaction->id)->update($data_update);
@@ -236,7 +236,7 @@ class TransactionController extends Controller
             DB::commit();
 
             return $this->responseSuccess($update);
-            
+
         } catch (Exception $th) {
             //throw $th;
             DB::rollBack();
