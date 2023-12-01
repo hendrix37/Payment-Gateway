@@ -204,11 +204,11 @@ class TransactionController extends Controller
                 'json_callback' => $response,
             ];
 
-            if ($data->status != 'SUCCESSFUL') {
+            if ($data->status == 'SUCCESSFUL') {
                 $data_update['status'] = StatusTypes::SUCCESSFUL;
-            } elseif ($data->status != 'CANCELLED') {
+            } elseif ($data->status == 'CANCELLED') {
                 $data_update['status'] = StatusTypes::CANCELLED;
-            } elseif ($data->status != 'FAILED') {
+            } elseif ($data->status == 'FAILED') {
                 $data_update['status'] = StatusTypes::FAILED;
             }
             
