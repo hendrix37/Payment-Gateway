@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\CreateTransactionRequest;
 use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\Transaction\TransactionResource;
+use App\Models\Bank;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
 use Carbon\Carbon;
@@ -190,15 +191,14 @@ class TransactionController extends Controller
 
     public function callback_accept_payment(Request $request)
     {
-        Log::channel('transaction')->info("accept payment : " . json_encode($request->all()));
+        $response = request()->data;
+
+        $data = json_decode($response);
+
+        Log::info("accept payment :  $data->id " . json_encode($request->all()));
 
         DB::beginTransaction();
         try {
-
-            $response = request()->data;
-
-            $data = json_decode($response);
-
 
             $data_update = [
                 'json_callback' => $response,
@@ -211,6 +211,10 @@ class TransactionController extends Controller
             } elseif ($data->status != 'FAILED') {
                 $data_update['status'] = StatusTypes::FAILED;
             }
+            
+            $bank = Bank::where('code', $data->sender_bank)->first();
+
+            $data_update['bank_id'] = $bank->id;
 
             $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
 
@@ -232,6 +236,7 @@ class TransactionController extends Controller
             DB::commit();
 
             return $this->responseSuccess($update);
+            
         } catch (Exception $th) {
             //throw $th;
             DB::rollBack();
@@ -240,56 +245,11 @@ class TransactionController extends Controller
 
     public function callback_transaction(Request $request)
     {
-        // {
-        //     "id": 123,
-        //     "user_id": 421,
-        //     "amount": 19661,
-        //     "status": "DONE",
-        //     "reason": "",
-        //     "timestamp": "2023-11-30 21:36:09",
-        //     "bank_code": "bca",
-        //     "account_number": "17100251",
-        //     "recipient_name": "PT Fliptech Lentera Inspirasi Pertiwi",
-        //     "sender_bank": null,
-        //     "remark": "Callback testing remark",
-        //     "receipt": "https://receipt.flip.id/receipt/view?transaction_id=W123!nVrp2",
-        //     "time_served": "2023-11-30 21:39:25",
-        //     "bundle_id": 0,
-        //     "company_id": 65569,
-        //     "recipient_city": 391,
-        //     "created_from": "API",
-        //     "direction": "DOMESTIC_TRANSFER",
-        //     "sender": null,
-        //     "fee": 0
-        // },
-        // {
-        //     "id": 123,
-        //     "user_id": 421,
-        //     "amount": 38963,
-        //     "status": "CANCELLED",
-        //     "reason": "NOT_REGISTERED_ACCOUNT",
-        //     "timestamp": "2023-11-30 21:32:04",
-        //     "bank_code": "bri",
-        //     "account_number": "59953935",
-        //     "recipient_name": "PT Fliptech Lentera Inspirasi Pertiwi",
-        //     "sender_bank": null,
-        //     "remark": "Callback testing remark",
-        //     "receipt": "https://receipt.flip.id/receipt/view?transaction_id=W123!ekEtT",
-        //     "time_served": "(not set)",
-        //     "bundle_id": 0,
-        //     "company_id": 65569,
-        //     "recipient_city": 391,
-        //     "created_from": "API",
-        //     "direction": "DOMESTIC_TRANSFER",
-        //     "sender": null,
-        //     "fee": 0
-        // },
-
         $response = request()->data;
 
         $data = json_decode($response);
 
-        Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
+        Log::info("Transaction ID $data->id : " . json_encode($request->all()));
 
         DB::beginTransaction();
         try {
@@ -335,29 +295,15 @@ class TransactionController extends Controller
 
     public function callback_inquiry(Request $request)
     {
-        // {
-        //     "bank_code": "bri",
-        //     "account_number": "50217720",
-        //     "account_holder": "PT Fliptech Lentera Inspirasi Pertiwi",
-        //     "status": "SUCCESS",
-        //     "inquiry_key": "E5JCyTbaY8Sj3vgA4hSf"
-        // },
-        // {
-        //     "bank_code": "bni",
-        //     "account_number": "84917661",
-        //     "account_holder": "",
-        //     "status": "INVALID_ACCOUNT_NUMBER",
-        //     "inquiry_key": "Si1TE52upxPSO7D5ur8F"
-        // },
-        Log::channel('transaction')->info("inquiry : " . json_encode($request->all()));
+        $response = request()->data;
+
+        $data = json_decode($response);
+
+        Log::info("inquiry : $data->account_number | $data->status" . json_encode($request->all()));
 
         DB::beginTransaction();
+
         try {
-
-            $response = request()->data;
-
-            $data = json_decode($response);
-
 
             $data_update = [
                 'json_callback' => $response,
