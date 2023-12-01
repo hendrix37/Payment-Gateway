@@ -190,6 +190,7 @@ class TransactionController extends Controller
 
     public function callback_accept_payment(Request $request)
     {
+        Log::channel('transaction')->info("accept payment : " . json_encode($request->all()));
 
         DB::beginTransaction();
         try {
@@ -198,7 +199,6 @@ class TransactionController extends Controller
 
             $data = json_decode($response);
 
-            Log::channel('transaction')->info("accept payment : " . json_encode($request->all()));
 
             $data_update = [
                 'json_callback' => $response,
@@ -284,14 +284,16 @@ class TransactionController extends Controller
         //     "sender": null,
         //     "fee": 0
         // },
+
+        $response = request()->data;
+
+        $data = json_decode($response);
+
+        Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
+
         DB::beginTransaction();
         try {
 
-            $response = request()->data;
-
-            $data = json_decode($response);
-
-            Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
 
             $data_update = [
                 'json_callback' => $response,
@@ -347,6 +349,7 @@ class TransactionController extends Controller
         //     "status": "INVALID_ACCOUNT_NUMBER",
         //     "inquiry_key": "Si1TE52upxPSO7D5ur8F"
         // },
+        Log::channel('transaction')->info("inquiry : " . json_encode($request->all()));
 
         DB::beginTransaction();
         try {
@@ -355,7 +358,6 @@ class TransactionController extends Controller
 
             $data = json_decode($response);
 
-            Log::channel('transaction')->info("inquiry : " . json_encode($request->all()));
 
             $data_update = [
                 'json_callback' => $response,
