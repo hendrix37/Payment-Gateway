@@ -260,4 +260,3 @@ class CustomerTransactionController extends Controller
         return $this->responseSuccess();
     }
 }
-// php artisan api:generate BankAccount "uuid:string:unique|bank_id:foreignId:nullable|account_number:string:unique:nullable|identity_owner:string:nullable|status:enum(new,old)" --all

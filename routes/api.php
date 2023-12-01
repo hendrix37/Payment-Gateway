@@ -57,7 +57,9 @@ Route::prefix('customer')->group(function () {
 });
 
 Route::prefix('callback')->group(function () {
-    Route::post('transaction', [TransactionController::class, 'callback'])->name('transaction.callback');
+    Route::post('accept-payment', [TransactionController::class, 'callback_accept_payment'])->name('accept_payment.callback');
+    Route::post('transaction', [TransactionController::class, 'callback_transaksi'])->name('transaction.callback');
+    Route::post('inquiry', [TransactionController::class, 'callback_inquiry'])->name('inquiry.callback');
 });
 
 /*=====  End of transactions   ======*/
@@ -77,3 +79,11 @@ Route::apiResource('/transactionHistories', \App\Http\Controllers\API\Transactio
 Route::apiResource('/withdraws', \App\Http\Controllers\API\WithdrawController::class);
 
 /*=====  End of withdraws   ======*/
+
+/*===========================
+=           bankAccounts           =
+=============================*/
+
+Route::apiResource('/bankAccounts', \App\Http\Controllers\API\BankAccountController::class);
+
+/*=====  End of bankAccounts   ======*/

@@ -23,5 +23,8 @@ class Bank extends Model
         'uuid',
         'name',
         'code',
+        'fee',
+        'queue',
+        'status',
     ];
 }

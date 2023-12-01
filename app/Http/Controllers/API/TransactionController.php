@@ -70,7 +70,7 @@ class TransactionController extends Controller
 
             $type = 'pay';
 
-            $title = "PAY/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
+            $title = "PAY/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -138,7 +138,7 @@ class TransactionController extends Controller
 
             $type = 'top_up';
 
-            $title = "TOPUP/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
+            $title = "TOPUP/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -188,8 +188,9 @@ class TransactionController extends Controller
         }
     }
 
-    public function callback(Request $request)
+    public function callback_accept_payment(Request $request)
     {
+
         DB::beginTransaction();
         try {
 
@@ -197,7 +198,164 @@ class TransactionController extends Controller
 
             $data = json_decode($response);
 
-            Log::channel('transaction')->info("Transaction ID $data->id : ".json_encode($request->all()));
+            Log::channel('transaction')->info("accept payment : " . json_encode($request->all()));
+
+            $data_update = [
+                'json_callback' => $response,
+            ];
+
+            if ($data->status != 'SUCCESSFUL') {
+                $data_update['status'] = StatusTypes::SUCCESSFUL;
+            } elseif ($data->status != 'CANCELLED') {
+                $data_update['status'] = StatusTypes::CANCELLED;
+            } elseif ($data->status != 'FAILED') {
+                $data_update['status'] = StatusTypes::FAILED;
+            }
+
+            $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
+
+            if ($transaction) {
+                $update = Transaction::where('id', $transaction->id)->update($data_update);
+
+                if ($update) {
+                    // Create a new transaction history record
+                    TransactionHistory::create([
+                        'json_before_value' => json_encode($transaction),
+                        'json_after_value' => json_encode($data_update), // Assuming $data_update is the updated data
+                        'action' => ActionTypes::UPDATED, // You may need to specify the action type (e.g., update, create, delete)
+                        'transaction_id' => $transaction->id,
+                        'status_transaction' => $data_update['status'], // Adjust accordingly based on your transaction model
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $this->responseSuccess($update);
+        } catch (Exception $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+    }
+
+    public function callback_transaction(Request $request)
+    {
+        // {
+        //     "id": 123,
+        //     "user_id": 421,
+        //     "amount": 19661,
+        //     "status": "DONE",
+        //     "reason": "",
+        //     "timestamp": "2023-11-30 21:36:09",
+        //     "bank_code": "bca",
+        //     "account_number": "17100251",
+        //     "recipient_name": "PT Fliptech Lentera Inspirasi Pertiwi",
+        //     "sender_bank": null,
+        //     "remark": "Callback testing remark",
+        //     "receipt": "https://receipt.flip.id/receipt/view?transaction_id=W123!nVrp2",
+        //     "time_served": "2023-11-30 21:39:25",
+        //     "bundle_id": 0,
+        //     "company_id": 65569,
+        //     "recipient_city": 391,
+        //     "created_from": "API",
+        //     "direction": "DOMESTIC_TRANSFER",
+        //     "sender": null,
+        //     "fee": 0
+        // },
+        // {
+        //     "id": 123,
+        //     "user_id": 421,
+        //     "amount": 38963,
+        //     "status": "CANCELLED",
+        //     "reason": "NOT_REGISTERED_ACCOUNT",
+        //     "timestamp": "2023-11-30 21:32:04",
+        //     "bank_code": "bri",
+        //     "account_number": "59953935",
+        //     "recipient_name": "PT Fliptech Lentera Inspirasi Pertiwi",
+        //     "sender_bank": null,
+        //     "remark": "Callback testing remark",
+        //     "receipt": "https://receipt.flip.id/receipt/view?transaction_id=W123!ekEtT",
+        //     "time_served": "(not set)",
+        //     "bundle_id": 0,
+        //     "company_id": 65569,
+        //     "recipient_city": 391,
+        //     "created_from": "API",
+        //     "direction": "DOMESTIC_TRANSFER",
+        //     "sender": null,
+        //     "fee": 0
+        // },
+        DB::beginTransaction();
+        try {
+
+            $response = request()->data;
+
+            $data = json_decode($response);
+
+            Log::channel('transaction')->info("Transaction ID $data->id : " . json_encode($request->all()));
+
+            $data_update = [
+                'json_callback' => $response,
+            ];
+
+            if ($data->status != 'SUCCESSFUL') {
+                $data_update['status'] = StatusTypes::SUCCESSFUL;
+            } elseif ($data->status != 'CANCELLED') {
+                $data_update['status'] = StatusTypes::CANCELLED;
+            } elseif ($data->status != 'FAILED') {
+                $data_update['status'] = StatusTypes::FAILED;
+            }
+
+            $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
+
+            if ($transaction) {
+                $update = Transaction::where('id', $transaction->id)->update($data_update);
+
+                if ($update) {
+                    // Create a new transaction history record
+                    TransactionHistory::create([
+                        'json_before_value' => json_encode($transaction),
+                        'json_after_value' => json_encode($data_update), // Assuming $data_update is the updated data
+                        'action' => ActionTypes::UPDATED, // You may need to specify the action type (e.g., update, create, delete)
+                        'transaction_id' => $transaction->id,
+                        'status_transaction' => $data_update['status'], // Adjust accordingly based on your transaction model
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $this->responseSuccess($update);
+        } catch (Exception $th) {
+            //throw $th;
+            DB::rollBack();
+        }
+    }
+
+    public function callback_inquiry(Request $request)
+    {
+        // {
+        //     "bank_code": "bri",
+        //     "account_number": "50217720",
+        //     "account_holder": "PT Fliptech Lentera Inspirasi Pertiwi",
+        //     "status": "SUCCESS",
+        //     "inquiry_key": "E5JCyTbaY8Sj3vgA4hSf"
+        // },
+        // {
+        //     "bank_code": "bni",
+        //     "account_number": "84917661",
+        //     "account_holder": "",
+        //     "status": "INVALID_ACCOUNT_NUMBER",
+        //     "inquiry_key": "Si1TE52upxPSO7D5ur8F"
+        // },
+
+        DB::beginTransaction();
+        try {
+
+            $response = request()->data;
+
+            $data = json_decode($response);
+
+            Log::channel('transaction')->info("inquiry : " . json_encode($request->all()));
 
             $data_update = [
                 'json_callback' => $response,
