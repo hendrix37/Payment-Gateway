@@ -13,8 +13,9 @@ class BankResource extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->name,
             'code' => $this->code,
-            'created_at' => dateTimeFormat($this->created_at),
-            'updated_at' => dateTimeFormat($this->updated_at),
+            'fee' => $this->fee,
+            'queue' => $this->queue,
+            'status' => $this->status,
         ];
     }
 }
