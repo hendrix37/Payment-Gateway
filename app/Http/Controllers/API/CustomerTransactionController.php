@@ -299,20 +299,11 @@ class CustomerTransactionController extends Controller
 
         $bank_collect = Bank::where('code', $request->bank_code)->first();
 
-        $status = null;
-        foreach (StatusTypes::toArray() as $key => $value) {
-
-
-            if ($key == $response->status) {
-                $status = $value;
-            }
-        }
-
         $data = [
             'bank_id' => $bank_collect->id,
             'account_number' => $request->account_number,
             'identity_owner' => $request->identity_owner,
-            'status' => $status,
+            'status' => StatusBank::PENDING,
         ];
 
         DB::beginTransaction();
@@ -321,7 +312,6 @@ class CustomerTransactionController extends Controller
             $bankAccount = BankAccount::create($data);
 
             // Request Bank Account Inquiry
-
             $dataRequest = Http::withHeaders([
                 'Authorization' => $this->getAuthorization(),
             ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
