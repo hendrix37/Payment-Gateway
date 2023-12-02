@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ActionTypes;
+use App\Enums\StatusBank;
 use App\Enums\StatusTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\CreateTransactionRequest;
 use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Models\Bank;
+use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
 use Carbon\Carbon;
@@ -80,7 +82,7 @@ class TransactionController extends Controller
             } elseif ($data->status == 'FAILED') {
                 $data_update['status'] = StatusTypes::FAILED;
             }
-            
+
             $bank = Bank::where('code', $data->sender_bank)->first();
 
             $data_update['bank_id'] = $bank->id;
@@ -105,7 +107,6 @@ class TransactionController extends Controller
             DB::commit();
 
             return $this->responseSuccess($update);
-
         } catch (Exception $th) {
             //throw $th;
             DB::rollBack();
@@ -173,35 +174,15 @@ class TransactionController extends Controller
         DB::beginTransaction();
 
         try {
+            $data_update = [];
 
-            $data_update = [
-                'json_callback' => $response,
-            ];
-
-            if ($data->status != 'SUCCESSFUL') {
-                $data_update['status'] = StatusTypes::SUCCESSFUL;
-            } elseif ($data->status != 'CANCELLED') {
-                $data_update['status'] = StatusTypes::CANCELLED;
-            } elseif ($data->status != 'FAILED') {
-                $data_update['status'] = StatusTypes::FAILED;
-            }
-
-            $transaction = Transaction::where('code_payment_gateway_relation', $data->id)->first();
-
-            if ($transaction) {
-                $update = Transaction::where('id', $transaction->id)->update($data_update);
-
-                if ($update) {
-                    // Create a new transaction history record
-                    TransactionHistory::create([
-                        'json_before_value' => json_encode($transaction),
-                        'json_after_value' => json_encode($data_update), // Assuming $data_update is the updated data
-                        'action' => ActionTypes::UPDATED, // You may need to specify the action type (e.g., update, create, delete)
-                        'transaction_id' => $transaction->id,
-                        'status_transaction' => $data_update['status'], // Adjust accordingly based on your transaction model
-                    ]);
+            foreach (StatusBank::toArray() as $key => $value) {
+                if ($key == $data->status) {
+                    $data_update['status'] = $value;
                 }
             }
+
+            $update = BankAccount::where('uuid', $data->inquiry_key)->update($data_update);
 
             DB::commit();
 

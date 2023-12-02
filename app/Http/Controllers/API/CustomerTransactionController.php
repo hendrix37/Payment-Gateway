@@ -324,6 +324,14 @@ class CustomerTransactionController extends Controller
 
             Log::info('response bank check : ' . json_encode($response));
 
+            foreach (StatusTypes::toArray() as $key => $value) {
+                if ($key == $response->status) {
+                    $bankAccount = BankAccount::find($bankAccount->id);
+                    $bankAccount->status = $value;
+                    $bankAccount->save();
+                }
+            }
+
             DB::commit();
 
             return $this->responseCreated('Bank Account created successfully', new BankAccountResource($bankAccount));
