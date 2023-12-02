@@ -297,19 +297,6 @@ class CustomerTransactionController extends Controller
             return back()->withInput()->with('error', 'SORRY, BANK ' . $bank[0]->status);
         }
 
-        // Request Bank Account Inquiry
-
-        $dataRequest = Http::withHeaders([
-            'Authorization' => $this->getAuthorization(),
-        ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
-            'bank_code' => $request->bank_code,
-            'account_number' => $request->account_number,
-        ]);
-
-        $response = $dataRequest->object();
-
-        Log::info('response bank check : ' . json_encode($response));
-
         $bank_collect = Bank::where('code', $request->bank_code)->first();
 
         $status = null;
@@ -332,6 +319,20 @@ class CustomerTransactionController extends Controller
         try {
 
             $bankAccount = BankAccount::create($data);
+
+            // Request Bank Account Inquiry
+
+            $dataRequest = Http::withHeaders([
+                'Authorization' => $this->getAuthorization(),
+            ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
+                'bank_code' => $request->bank_code,
+                'account_number' => $request->account_number,
+                'inquiry_key' => $bankAccount->uuid,
+            ]);
+
+            $response = $dataRequest->object();
+
+            Log::info('response bank check : ' . json_encode($response));
 
             DB::commit();
 
