@@ -182,7 +182,9 @@ class TransactionController extends Controller
                 }
             }
 
+            Log::info(json_encode($data_update));
             $update = BankAccount::where('uuid', $data->inquiry_key)->update($data_update);
+            Log::info(json_encode($update));
 
             DB::commit();
 
