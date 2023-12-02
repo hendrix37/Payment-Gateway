@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('link_payment')->nullable();
             $table->string('identity_owner')->nullable();
             $table->string('identity_driver')->nullable();
-            $table->enum('status', StatusTypes::getAll())->nullable();
-            $table->enum('type', TransactionTypes::getAll())->nullable();
+            $table->enum('status', StatusTypes::toArray())->nullable();
+            $table->enum('type', TransactionTypes::toArray())->nullable();
             $table->text('code_payment_gateway_relation')->nullable();
             $table->text('json_callback')->nullable();
 

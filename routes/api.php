@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 =           banks           =
 =============================*/
 
-Route::apiResource('/banks', \App\Http\Controllers\API\BankController::class);
+Route::apiResource('/banks', \App\Http\Controllers\API\BankController::class)->only(['index']);
 
 /*=====  End of banks   ======*/
 
@@ -68,7 +68,7 @@ Route::prefix('callback')->group(function () {
 =           transactionHistories           =
 =============================*/
 
-Route::apiResource('/transactionHistories', \App\Http\Controllers\API\TransactionHistoryController::class);
+Route::apiResource('/transaction-histories', \App\Http\Controllers\API\TransactionHistoryController::class);
 
 /*=====  End of transactionHistories   ======*/
 
@@ -84,6 +84,6 @@ Route::apiResource('/withdraws', \App\Http\Controllers\API\WithdrawController::c
 =           bankAccounts           =
 =============================*/
 
-Route::apiResource('/bankAccounts', \App\Http\Controllers\API\BankAccountController::class);
+Route::apiResource('/bank-accounts', \App\Http\Controllers\API\BankAccountController::class)->only([]);
 
 /*=====  End of bankAccounts   ======*/

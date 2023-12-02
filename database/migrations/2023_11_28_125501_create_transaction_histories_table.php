@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->text('json_before_value')->nullable();
             $table->text('json_after_value')->required();
-            $table->enum('action', ActionTypes::getAll());
+            $table->enum('action', ActionTypes::toArray());
             $table->foreignId('transaction_id')->constrained('transactions');
             $table->string('status_transaction')->nullable();
 

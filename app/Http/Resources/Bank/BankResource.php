@@ -8,7 +8,7 @@ class BankResource extends JsonResource
 {
     public function toArray($request): array
     {
-        return [
+        return [            
             'id' => $this->id,
             'uuid' => $this->uuid,
             'name' => $this->name,

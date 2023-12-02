@@ -6,15 +6,38 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateBankAccountRequest extends FormRequest
 {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules(): array
     {
         return [
-            'uuid' => ['required', 'string'],
-			'bank_id' => ['required'],
-			'account_number' => ['required', 'string'],
-			'identity_owner' => ['nullable', 'string'],
-			'identity_driver' => ['nullable', 'string'],
-			'status' => ['required', 'in:success,failed'],
+            /**
+             * The account number for the bank account.
+             *
+             * @var string
+             * @example 1234567890
+             */
+            'account_number' => ['required'],
+
+            /**
+             * The code representing the bank associated with the account.
+             *
+             * @var string
+             * @example bri
+             * @see https://docs.flip.id/?php#destination-bank
+             */
+            'bank_code' => ['required', 'string', 'exists:App\Models\Bank,code'],
+
+            /**
+             * The owner's identity associated with the bank account.
+             *
+             * @var string
+             * @example '64ce95d1ac3d33f73b7842821'
+             */
+            'identity_owner' => ['required', 'string'],
         ];
     }
 }

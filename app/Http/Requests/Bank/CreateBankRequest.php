@@ -9,8 +9,19 @@ class CreateBankRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'uuid' => ['required', 'string'],
+            /**
+             * The Bank Name.
+             *
+             * @var string
+             * @example BANK REPUBLIK INDONESIA (BRI)
+             */
             'name' => ['required', 'string'],
+            /**
+             * The Bank CODE .
+             *
+             * @var string
+             * @example brr
+             */
             'code' => ['nullable', 'string'],
         ];
     }

@@ -3,27 +3,36 @@
 namespace App\Http\Controllers\API;
 
 use App\Enums\ActionTypes;
+use App\Enums\StatusBank;
 use App\Enums\StatusTypes;
 use App\Enums\TransactionTypes;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BankAccount\CreateBankAccountRequest;
+use App\Http\Requests\CustomerTransaction\SaldoRequest;
+use App\Http\Requests\CustomerTransaction\TopUpRequest;
+use App\Http\Resources\BankAccount\BankAccountResource;
 use App\Http\Resources\Transaction\TransactionResource;
 use App\Models\Bank;
+use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
 use Carbon\Carbon;
 use Essa\APIToolKit\Filters\DTO\FiltersDTO;
 use Exception;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Log;
 
 class CustomerTransactionController extends Controller
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
-    public function saldo(Request $request)
+    public function saldo(SaldoRequest $request)
     {
         $saldo = Transaction::saldoCustomer($request->idowner);
 
@@ -35,7 +44,7 @@ class CustomerTransactionController extends Controller
         return $this->responseSuccess('Get Saldo', $data);
     }
 
-    public function top_up(Request $request): JsonResponse
+    public function top_up(TopUpRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -48,7 +57,7 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::TOPUP;
 
-            $title = "$type/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
+            $title = "$type/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -118,7 +127,7 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::PAY;
 
-            $title = "$type/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
+            $title = "$type/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
@@ -255,8 +264,83 @@ class CustomerTransactionController extends Controller
         return TransactionResource::collection($records);
     }
 
-    public function add_bank_account(): JsonResponse
+    // public function add_bank_account(): JsonResponse
+    // {
+    //     return $this->responseSuccess();
+    // }
+
+    public function add_bank_account(CreateBankAccountRequest $request): JsonResponse
     {
-        return $this->responseSuccess();
+        $check = BankAccount::where([
+            ['account_number', $request->account_number],
+            ['identity_owner', $request->identity_owner],
+            ['status', StatusBank::SUCCESS],
+        ])->exists();
+
+        if ($check) {
+            return $this->responseBadRequest(null, 'Bank Account has been created');
+        }
+
+        Log::info('start Check account Number');
+        Log::info('request data : ' . json_encode($request->all()));
+        // Request Bank Info
+        $requestBankInfo = Http::withHeaders([
+            'Authorization' => $this->getAuthorization(),
+            // 'Content-Type' => 'application/x-www-form-urlencoded',
+        ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $request->bank_code);
+
+        $bank = $requestBankInfo->object();
+
+        Log::info('requestBankInfo : ' . json_encode($bank));
+
+        if ($bank[0]->status != 'OPERATIONAL') {
+            return back()->withInput()->with('error', 'SORRY, BANK ' . $bank[0]->status);
+        }
+
+        // Request Bank Account Inquiry
+
+        $dataRequest = Http::withHeaders([
+            'Authorization' => $this->getAuthorization(),
+        ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
+            'bank_code' => $request->bank_code,
+            'account_number' => $request->account_number,
+        ]);
+
+        $response = $dataRequest->object();
+
+        Log::info('response bank check : ' . json_encode($response));
+
+        $bank_collect = Bank::where('code', $request->bank_code)->first();
+
+        $status = null;
+        foreach (StatusTypes::toArray() as $key => $value) {
+
+
+            if ($key == $response->status) {
+                $status = $value;
+            }
+        }
+
+        $data = [
+            'bank_id' => $bank_collect->id,
+            'account_number' => $request->account_number,
+            'identity_owner' => $request->identity_owner,
+            'status' => $status,
+        ];
+
+        DB::beginTransaction();
+        try {
+
+            $bankAccount = BankAccount::create($data);
+
+            DB::commit();
+
+            return $this->responseCreated('Bank Account created successfully', new BankAccountResource($bankAccount));
+        } catch (Exception $th) {
+            //throw $th;
+            DB::rollBack();
+
+            return $this->responseBadRequest($th->getMessage(), 'BankAccount created Error');
+        }
     }
 }
