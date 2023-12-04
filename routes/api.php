@@ -54,6 +54,7 @@ Route::prefix('customer')->group(function () {
     Route::post('withdraw', [CustomerTransactionController::class, 'withdraw'])->name('withdraw.customer');
     Route::post('history', [CustomerTransactionController::class, 'history'])->name('history.customer');
     Route::post('add-bank-account', [CustomerTransactionController::class, 'add_bank_account'])->name('add-bank-account.customer');
+    Route::post('list-bank-account', [CustomerTransactionController::class, 'list_bank_account'])->name('list-bank-account.customer');
 });
 
 Route::prefix('callback')->group(function () {

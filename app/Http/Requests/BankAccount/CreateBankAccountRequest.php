@@ -8,8 +8,6 @@ class CreateBankAccountRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -18,6 +16,7 @@ class CreateBankAccountRequest extends FormRequest
              * The account number for the bank account.
              *
              * @var string
+             *
              * @example 1234567890
              */
             'account_number' => ['required'],
@@ -26,7 +25,9 @@ class CreateBankAccountRequest extends FormRequest
              * The code representing the bank associated with the account.
              *
              * @var string
+             *
              * @example bri
+             *
              * @see https://docs.flip.id/?php#destination-bank
              */
             'bank_code' => ['required', 'string', 'exists:App\Models\Bank,code'],
@@ -35,9 +36,10 @@ class CreateBankAccountRequest extends FormRequest
              * The owner's identity associated with the bank account.
              *
              * @var string
-             * @example '64ce95d1ac3d33f73b7842821'
+             *
+             * @example 64ce95d1ac3d33f73b7842821
              */
-            'identity_owner' => ['required', 'string'],
+            'idowner' => ['required', 'string'],
         ];
     }
 }

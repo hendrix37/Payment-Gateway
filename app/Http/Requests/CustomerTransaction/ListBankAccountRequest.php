@@ -4,7 +4,7 @@ namespace App\Http\Requests\CustomerTransaction;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SaldoRequest extends FormRequest
+class ListBankAccountRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

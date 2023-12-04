@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
         // Run the task every 3 hours
 
         $schedule->command('app:check-bank-status')->cron('0 9,12,15,18,21,0,3,6 * * *');
-        
+
     }
 
     /**
@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

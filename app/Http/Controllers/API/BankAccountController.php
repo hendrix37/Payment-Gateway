@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Enums\StatusBank;
 use App\Enums\StatusTypes;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BankAccount\UpdateBankAccountRequest;
 use App\Http\Requests\BankAccount\CreateBankAccountRequest;
 use App\Http\Requests\BankAccount\ListBankAccountRequest;
+use App\Http\Requests\BankAccount\UpdateBankAccountRequest;
 use App\Http\Resources\BankAccount\BankAccountResource;
 use App\Models\Bank;
 use App\Models\BankAccount;
@@ -27,7 +27,7 @@ class BankAccountController extends Controller
 
     public function index(ListBankAccountRequest $request): AnonymousResourceCollection
     {
-        if (!empty($request->idowner)) {
+        if (! empty($request->idowner)) {
             $bankAccounts = BankAccount::useFilters()->dynamicPaginate();
         } else {
             $bankAccounts = BankAccount::useFilters()->dynamicPaginate();
@@ -49,38 +49,37 @@ class BankAccountController extends Controller
         }
 
         Log::info('start Check account Number');
-        Log::info('request data : ' . json_encode($request->all()));
+        Log::info('request data : '.json_encode($request->all()));
         // Request Bank Info
         $requestBankInfo = Http::withHeaders([
             'Authorization' => $this->getAuthorization(),
             // 'Content-Type' => 'application/x-www-form-urlencoded',
-        ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $request->bank_code);
+        ])->get(config('flip.base_url_v2').'/general/banks?code='.$request->bank_code);
 
         $bank = $requestBankInfo->object();
-        Log::info('requestBankInfo : ' . json_encode($bank));
+        Log::info('requestBankInfo : '.json_encode($bank));
 
         if ($bank[0]->status != 'OPERATIONAL') {
-            return back()->withInput()->with('error', 'SORRY, BANK ' . $bank[0]->status);
+            return back()->withInput()->with('error', 'SORRY, BANK '.$bank[0]->status);
         }
 
         // Request Bank Account Inquiry
 
         $dataRequest = Http::withHeaders([
             'Authorization' => $this->getAuthorization(),
-        ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
+        ])->post(config('flip.base_url_v2').'/disbursement/bank-account-inquiry', [
             'bank_code' => $request->bank_code,
             'account_number' => $request->account_number,
         ]);
 
         $response = $dataRequest->object();
 
-        Log::info('response bank check : ' . json_encode($response));
+        Log::info('response bank check : '.json_encode($response));
 
         $bank_collect = Bank::where('code', $request->bank_code)->first();
 
         $status = null;
         foreach (StatusTypes::toArray() as $key => $value) {
-
 
             if ($key == $response->status) {
                 $status = $value;

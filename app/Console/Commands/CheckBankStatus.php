@@ -21,17 +21,17 @@ class CheckBankStatus extends Command
     {
         try {
             $secret = env('FLIP_SECRET_KEY');
-            $authorization = 'Basic ' . base64_encode($secret . ':');
+            $authorization = 'Basic '.base64_encode($secret.':');
 
             foreach (Bank::all() as $bank) {
                 // Request Bank Info
                 $requestBankInfo = Http::withHeaders([
                     'Authorization' => $authorization,
-                ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $bank->code);
+                ])->get(config('flip.base_url_v2').'/general/banks?code='.$bank->code);
 
                 $bank_response = $requestBankInfo->object();
 
-                if (!empty($bank_response) && isset($bank_response[0])) {
+                if (! empty($bank_response) && isset($bank_response[0])) {
                     $statusKey = $bank_response[0]->status;
 
                     // Check if the status key exists in the enum

@@ -8,7 +8,6 @@ use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\BankAccount
  *
@@ -40,7 +39,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BankAccount extends Model
 {
-    use HasFactory, Filterable, Uuid;
+    use Filterable, HasFactory, Uuid;
 
     protected string $default_filters = BankAccountFilters::class;
 

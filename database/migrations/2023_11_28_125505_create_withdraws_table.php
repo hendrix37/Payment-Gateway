@@ -20,6 +20,7 @@ return new class extends Migration
             $table->double('amount');
             $table->text('remark')->nullable();
             $table->string('idempotency')->required();
+            $table->foreignId('transaction_id')->constrained('transactions');
 
             $table->timestamps();
         });

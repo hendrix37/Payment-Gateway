@@ -13,7 +13,6 @@ use App\Models\Bank;
 use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Models\TransactionHistory;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -66,7 +65,7 @@ class TransactionController extends Controller
 
         $data = json_decode($response);
 
-        Log::info("accept payment :  $data->id " . json_encode($request->all()));
+        Log::info("accept payment :  $data->id ".json_encode($request->all()));
 
         DB::beginTransaction();
         try {
@@ -119,11 +118,10 @@ class TransactionController extends Controller
 
         $data = json_decode($response);
 
-        Log::info("Transaction ID $data->id : " . json_encode($request->all()));
+        Log::info("Transaction ID $data->id : ".json_encode($request->all()));
 
         DB::beginTransaction();
         try {
-
 
             $data_update = [
                 'json_callback' => $response,
@@ -169,7 +167,7 @@ class TransactionController extends Controller
 
         $data = json_decode($response);
 
-        Log::info("inquiry : $data->account_number | $data->status" . json_encode($request->all()));
+        Log::info("inquiry : $data->account_number | $data->status".json_encode($request->all()));
 
         DB::beginTransaction();
 

@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereRemark($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereUuid($value)
+ * @property-read \App\Models\Transaction $transaction
  * @mixin \Eloquent
  */
 class Withdraw extends Model
@@ -57,5 +58,11 @@ class Withdraw extends Model
         'amount',
         'remark',
         'idempotency',
+        'transaction_id',
     ];
+
+    public function transaction(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Transaction::class);
+    }
 }

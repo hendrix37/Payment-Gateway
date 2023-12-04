@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->string('fee')->nullable();
             $table->string('queue')->nullable();
-            
+
             $table->enum('status', BankStatusTypes::toArray())->nullable();
 
             $table->timestamps();

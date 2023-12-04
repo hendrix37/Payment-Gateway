@@ -35,15 +35,15 @@ class BankController extends Controller
         // Modify the 'code' attribute, e.g., by adding a prefix
         $requestBankInfo = Http::withHeaders([
             'Authorization' => $this->authorization,
-        ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $validatedData['code']);
+        ])->get(config('flip.base_url_v2').'/general/banks?code='.$validatedData['code']);
 
         $bank_response = $requestBankInfo->object();
 
         if ($bank_response->message != 'BANK_NOT_FOUND') {
 
-            $validatedData['status'] = 'MOD_' . $validatedData['code'];
-            $validatedData['queue'] = 'MOD_' . $validatedData['code'];
-            $validatedData['fee'] = 'MOD_' . $validatedData['code'];
+            $validatedData['status'] = 'MOD_'.$validatedData['code'];
+            $validatedData['queue'] = 'MOD_'.$validatedData['code'];
+            $validatedData['fee'] = 'MOD_'.$validatedData['code'];
 
             $bank = Bank::create($request->validated());
 

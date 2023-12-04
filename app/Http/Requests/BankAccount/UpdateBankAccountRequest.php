@@ -10,11 +10,11 @@ class UpdateBankAccountRequest extends FormRequest
     {
         return [
             'uuid' => ['sometimes', 'string'],
-			'bank_id' => ['sometimes'],
-			'account_number' => ['sometimes', 'string'],
-			'identity_owner' => ['sometimes', 'string'],
-			'identity_driver' => ['sometimes', 'string'],
-			'status' => ['sometimes', 'in:success,failed'],
+            'bank_id' => ['sometimes'],
+            'account_number' => ['sometimes', 'string'],
+            'identity_owner' => ['sometimes', 'string'],
+            'identity_driver' => ['sometimes', 'string'],
+            'status' => ['sometimes', 'in:success,failed'],
         ];
     }
 }

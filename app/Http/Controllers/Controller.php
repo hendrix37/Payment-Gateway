@@ -29,7 +29,7 @@ class Controller extends BaseController
     {
         $this->secret = env('FLIP_SECRET_KEY');
 
-        $encoded_auth = base64_encode($this->secret . ':');
+        $encoded_auth = base64_encode($this->secret.':');
 
         $this->authorization = "Basic $encoded_auth";
     }
@@ -38,6 +38,7 @@ class Controller extends BaseController
     {
         return $this->authorization;
     }
+
     /**
      * Return a success response.
      *
@@ -60,7 +61,7 @@ class Controller extends BaseController
                 'is_address_required' => 0,
                 'is_phone_number_required' => 0,
             ];
-            Log::channel('transaction')->info('Data Send : ' . json_encode($data));
+            Log::channel('transaction')->info('Data Send : '.json_encode($data));
 
             $response = Http::withHeaders([
                 'Authorization' => $this->authorization,
@@ -68,11 +69,11 @@ class Controller extends BaseController
 
             $responseData = json_decode($response->body(), true); // Decode JSON response
 
-            Log::channel('transaction')->info('Response : ' . $response->body());
+            Log::channel('transaction')->info('Response : '.$response->body());
 
             return $responseData;
         } catch (Exception $th) {
-            Log::channel('transaction')->info('Error : ' . $th->getMessage());
+            Log::channel('transaction')->info('Error : '.$th->getMessage());
         }
         Log::channel('transaction')->info('End');
     }

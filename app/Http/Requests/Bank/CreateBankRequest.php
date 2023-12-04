@@ -13,6 +13,7 @@ class CreateBankRequest extends FormRequest
              * The Bank Name.
              *
              * @var string
+             *
              * @example BANK REPUBLIK INDONESIA (BRI)
              */
             'name' => ['required', 'string'],
@@ -20,6 +21,7 @@ class CreateBankRequest extends FormRequest
              * The Bank CODE .
              *
              * @var string
+             *
              * @example brr
              */
             'code' => ['nullable', 'string'],

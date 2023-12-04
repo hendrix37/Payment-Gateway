@@ -107,10 +107,11 @@ class Transaction extends Model
         $saldo = $query->where('identity_owner', $id_owner)
             ->where('status', StatusTypes::SUCCESSFUL)
             ->selectRaw('SUM(CASE 
-							WHEN type = "top_up" THEN amount 
-							WHEN type = "pay" AND additional_cost IS NOT NULL THEN -amount - additional_cost 
-							ELSE -amount 
-						END) as saldo')
+                        WHEN type = "top_up" THEN amount 
+                        WHEN type = "pay" AND additional_cost IS NOT NULL THEN -amount - additional_cost 
+                        WHEN type = "withdraw" THEN -amount 
+                        ELSE 0 
+                    END) as saldo')
             ->value('saldo');
 
         return $saldo ?? 0;

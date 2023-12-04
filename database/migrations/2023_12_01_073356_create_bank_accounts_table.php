@@ -9,28 +9,24 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-			$table->foreignId('bank_id')->constrained('banks');
-			$table->string('account_number')->nullable();
-			$table->string('identity_owner')->nullable();
-			$table->string('identity_driver')->nullable();
-			$table->enum('status', StatusBank::toArray());
-            
+            $table->foreignId('bank_id')->constrained('banks');
+            $table->string('account_number')->nullable();
+            $table->string('identity_owner')->nullable();
+            $table->string('identity_driver')->nullable();
+            $table->enum('status', StatusBank::getAll());
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {
