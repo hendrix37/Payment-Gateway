@@ -55,4 +55,9 @@ class Bank extends Model
         'queue',
         'status',
     ];
+
+    public function bank_accounts()
+    {
+        return $this->hasMany(BankAccount::class); // Adjust the model name as needed
+    }
 }

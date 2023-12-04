@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\BankResource\Pages;
+namespace App\Filament\Resources\UserResource\Pages;
 
-use App\Filament\Resources\BankResource;
+use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateBank extends CreateRecord
+class CreateUser extends CreateRecord
 {
-    protected static string $resource = BankResource::class;
+    protected static string $resource = UserResource::class;
 
     protected function getRedirectUrl(): string
     {

@@ -56,4 +56,11 @@ class StatusBank extends Enum
      * public const CLOSED = 'closed';
      */
     public const CLOSED = 'closed';
+
+    // Method to get the icon for a specific status
+    public static function getIcon(string $status): string
+    {
+        $icons = StatusBankIcons::$statusIcons;
+        return $icons[$status] ?? 'heroicon-o-lock-closed';
+    }
 }

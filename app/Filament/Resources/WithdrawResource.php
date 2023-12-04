@@ -3,15 +3,20 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WithdrawResource\Pages;
+use App\Filament\Resources\WithdrawResource\RelationManagers;
 use App\Models\Withdraw;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WithdrawResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Content';
+    
     protected static ?string $model = Withdraw::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -20,6 +25,9 @@ class WithdrawResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('transaction_id')
+                    ->relationship('transaction', 'id')
+                    ->required(),
                 Forms\Components\TextInput::make('uuid')
                     ->label('UUID')
                     ->required()
@@ -50,6 +58,9 @@ class WithdrawResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('transaction.id')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('uuid')
                     ->label('UUID')
                     ->searchable(),

@@ -12,8 +12,9 @@ class WithdrawFactory extends Factory
 {
     public function definition(): array
     {
-        $bank_account = BankAccount::with('bank')->where('status', StatusBank::SUCCESS)->inRandomOrder()->first();
+        $bank_account = BankAccount::has('bank')->where('status', StatusBank::SUCCESS)->inRandomOrder()->first();
         $transaction = Transaction::where('type', TransactionTypes::WITHDRAW)->inRandomOrder()->first();
+
         return [
             'json_request' => $this->faker->text(),
             'account_number' => $bank_account->account_number,

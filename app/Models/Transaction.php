@@ -60,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction saldoDriver($id_driver)
  * @mixin \Eloquent
  */
 class Transaction extends Model

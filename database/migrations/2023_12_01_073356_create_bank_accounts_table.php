@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('account_number')->nullable();
             $table->string('identity_owner')->nullable();
             $table->string('identity_driver')->nullable();
-            $table->enum('status', StatusBank::getAll());
+            $table->enum('status', StatusBank::getAll())->default(StatusBank::PENDING);
 
             $table->timestamps();
         });
