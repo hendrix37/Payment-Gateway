@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\CustomerTransaction;
+namespace App\Http\Requests\DriverTransaction;
 
 use App\Rules\CheckSaldo;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,22 +25,22 @@ class PayRequest extends FormRequest
             'iddriver' => ['required', 'string'],
 
             /**
-             * The ID of the job owner related to the driver.
+             * The ID of the job driver related to the driver.
              *
              * @var string
              *
              * @example 654e89edd3227bf93f9246b3
              */
-            'idownerjob' => ['required', 'string'],
+            'iddriverjob' => ['required', 'string'],
 
             /**
-             * The ID of the owner initiating the payment.
+             * The ID of the driver initiating the payment.
              *
              * @var string
              *
              * @example 64ce95d1ac3d33f73b7842821
              */
-            'idowner' => ['required', 'string'],
+            'iddriver' => ['required', 'string'],
 
             /**
              * The payment amount.

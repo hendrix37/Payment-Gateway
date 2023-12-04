@@ -67,7 +67,7 @@ class CustomerTransactionController extends Controller
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->idwork;
+            $identity_driver = $request->iddriver;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 
@@ -138,7 +138,7 @@ class CustomerTransactionController extends Controller
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->idwork;
+            $identity_driver = $request->iddriver;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 

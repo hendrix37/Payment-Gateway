@@ -116,4 +116,19 @@ class Transaction extends Model
 
         return $saldo ?? 0;
     }
+
+    public function scopeSaldoDriver($query, $id_driver)
+    {
+        $saldo = $query->where('identity_driver', $id_driver)
+            ->where('status', StatusTypes::SUCCESSFUL)
+            ->selectRaw('SUM(CASE 
+                        WHEN type = "top_up" THEN amount 
+                        WHEN type = "pay" AND additional_cost IS NOT NULL THEN -amount - additional_cost 
+                        WHEN type = "withdraw" THEN -amount 
+                        ELSE 0 
+                    END) as saldo')
+            ->value('saldo');
+
+        return $saldo ?? 0;
+    }
 }

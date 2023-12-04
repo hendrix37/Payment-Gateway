@@ -41,10 +41,11 @@ Route::apiResource('/transactions', \App\Http\Controllers\API\TransactionControl
 Route::prefix('driver')->group(function () {
     Route::post('saldo', [DriverTransactionController::class, 'saldo'])->name('get-saldo.driver');
     Route::post('top-up', [DriverTransactionController::class, 'top_up'])->name('top-up.driver');
-    Route::post('pay', [DriverTransactionController::class, 'pay'])->name('pay.driver');
+    // Route::post('pay', [DriverTransactionController::class, 'pay'])->name('pay.driver');
     Route::post('withdraw', [DriverTransactionController::class, 'withdraw'])->name('withdraw.driver');
     Route::post('history', [DriverTransactionController::class, 'history'])->name('history.driver');
     Route::post('add-bank-account', [DriverTransactionController::class, 'add_bank_account'])->name('add-bank-account.driver');
+    Route::post('list-bank-account', [DriverTransactionController::class, 'list_bank_account'])->name('list-bank-account.driver');
 });
 
 Route::prefix('customer')->group(function () {
