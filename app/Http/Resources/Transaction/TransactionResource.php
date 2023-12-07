@@ -19,7 +19,7 @@ class TransactionResource extends JsonResource
             'expired_date' => dateTimeFormat($this->expired_date),
             'link_payment' => $this->link_payment,
             'identity_owner' => $this->identity_owner,
-            'identity_driver' => $this->identity_driver,
+            'identity_work' => $this->identity_work,
             'status' => $this->status,
             // 'code_payment_gateway_relation' => $this->code_payment_gateway_relation,
             // 'json_callback' => $this->json_callback,

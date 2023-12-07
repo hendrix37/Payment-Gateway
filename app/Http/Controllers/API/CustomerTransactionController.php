@@ -63,11 +63,11 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::TOPUP;
 
-            $title = "TOPUP/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "TOPUP/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->iddriver;
+            $identity_work = $request->idwork;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 
@@ -85,7 +85,7 @@ class CustomerTransactionController extends Controller
                 'expired_date' => Carbon::now()->addDay(),
                 'link_payment' => $response_flip['link_url'],
                 'identity_owner' => $identity_owner,
-                'identity_driver' => $identity_driver,
+                'identity_work' => $identity_work,
                 'status' => 'PENDING',
                 'type' => $type,
                 'code_payment_gateway_relation' => $response_flip['link_id'],
@@ -134,11 +134,11 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::PAY;
 
-            $title = "PAY/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "PAY/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->iddriver;
+            $identity_work = $request->idwork;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 
@@ -150,7 +150,7 @@ class CustomerTransactionController extends Controller
                 'additional_cost' => $biaya_penanganan,
                 'expired_date' => Carbon::now()->addDay(),
                 'identity_owner' => $identity_owner,
-                'identity_driver' => $identity_driver,
+                'identity_work' => $identity_work,
                 'status' => StatusTypes::SUCCESSFUL,
                 'type' => $type,
             ];
@@ -206,8 +206,7 @@ class CustomerTransactionController extends Controller
 
             $type = TransactionTypes::WITHDRAW;
 
-            $title = "WITHDRAW/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
-
+            $title = "WITHDRAW/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             // Generate Idempotency Key
             $idempotencyKey = bin2hex(random_bytes(16));
@@ -216,7 +215,7 @@ class CustomerTransactionController extends Controller
             $createDisbursement = Http::withHeaders([
                 'Authorization' => $this->getAuthorization(),
                 'idempotency-key' => $title,
-            ])->post(config('flip.base_url_v3') . '/disbursement', [
+            ])->post(config('flip.base_url_v3').'/disbursement', [
                 'bank_code' => $bank->code,
                 'account_number' => $bank_account->account_number,
                 'amount' => $amount,
@@ -296,7 +295,6 @@ class CustomerTransactionController extends Controller
         return TransactionResource::collection($records);
     }
 
-
     public function add_bank_account(CreateBankAccountRequest $request): JsonResponse
     {
         $check = BankAccount::where([
@@ -310,19 +308,19 @@ class CustomerTransactionController extends Controller
         }
 
         Log::info('start Check account Number');
-        Log::info('request data : ' . json_encode($request->all()));
+        Log::info('request data : '.json_encode($request->all()));
         // Request Bank Info
         $requestBankInfo = Http::withHeaders([
             'Authorization' => $this->getAuthorization(),
             // 'Content-Type' => 'application/x-www-form-urlencoded',
-        ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $request->bank_code);
+        ])->get(config('flip.base_url_v2').'/general/banks?code='.$request->bank_code);
 
         $bank = $requestBankInfo->object();
 
-        Log::info('requestBankInfo : ' . json_encode($bank));
+        Log::info('requestBankInfo : '.json_encode($bank));
 
         if ($bank[0]->status != 'OPERATIONAL') {
-            return back()->withInput()->with('error', 'SORRY, BANK ' . $bank[0]->status);
+            return back()->withInput()->with('error', 'SORRY, BANK '.$bank[0]->status);
         }
 
         $bank_collect = Bank::where('code', $request->bank_code)->first();
@@ -342,7 +340,7 @@ class CustomerTransactionController extends Controller
             // Request Bank Account Inquiry
             $dataRequest = Http::withHeaders([
                 'Authorization' => $this->getAuthorization(),
-            ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
+            ])->post(config('flip.base_url_v2').'/disbursement/bank-account-inquiry', [
                 'bank_code' => $request->bank_code,
                 'account_number' => $request->account_number,
                 'inquiry_key' => $bankAccount->uuid,
@@ -350,7 +348,7 @@ class CustomerTransactionController extends Controller
 
             $response = $dataRequest->object();
 
-            Log::info('response bank check : ' . json_encode($response));
+            Log::info('response bank check : '.json_encode($response));
 
             foreach (StatusTypes::toArray() as $key => $value) {
                 if ($key == $response->status) {
@@ -371,13 +369,12 @@ class CustomerTransactionController extends Controller
         }
     }
 
-
     public function list_bank_account(ListBankAccountRequest $request): JsonResponse
     {
         $bankAccounts = BankAccount::where([
-                ['identity_owner', $request->idowner],
-                ['status', StatusBank::SUCCESS],
-            ])
+            ['identity_owner', $request->idowner],
+            ['status', StatusBank::SUCCESS],
+        ])
             ->useFilters()
             ->dynamicPaginate();
 

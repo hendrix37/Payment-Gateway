@@ -38,14 +38,14 @@ Route::apiResource('/transactions', \App\Http\Controllers\API\TransactionControl
 // Route::post('/transaction/pay', [\App\Http\Controllers\API\TransactionController::class, 'pay']);
 // Route::post('/transaction/top_up', [\App\Http\Controllers\API\TransactionController::class, 'top_up']);
 
-Route::prefix('driver')->group(function () {
-    Route::post('saldo', [DriverTransactionController::class, 'saldo'])->name('get-saldo.driver');
-    Route::post('top-up', [DriverTransactionController::class, 'top_up'])->name('top-up.driver');
-    // Route::post('pay', [DriverTransactionController::class, 'pay'])->name('pay.driver');
-    Route::post('withdraw', [DriverTransactionController::class, 'withdraw'])->name('withdraw.driver');
-    Route::post('history', [DriverTransactionController::class, 'history'])->name('history.driver');
-    Route::post('add-bank-account', [DriverTransactionController::class, 'add_bank_account'])->name('add-bank-account.driver');
-    Route::post('list-bank-account', [DriverTransactionController::class, 'list_bank_account'])->name('list-bank-account.driver');
+Route::prefix('work')->group(function () {
+    Route::post('saldo', [DriverTransactionController::class, 'saldo'])->name('get-saldo.work');
+    Route::post('top-up', [DriverTransactionController::class, 'top_up'])->name('top-up.work');
+    // Route::post('pay', [DriverTransactionController::class, 'pay'])->name('pay.work');
+    Route::post('withdraw', [DriverTransactionController::class, 'withdraw'])->name('withdraw.work');
+    Route::post('history', [DriverTransactionController::class, 'history'])->name('history.work');
+    Route::post('add-bank-account', [DriverTransactionController::class, 'add_bank_account'])->name('add-bank-account.work');
+    Route::post('list-bank-account', [DriverTransactionController::class, 'list_bank_account'])->name('list-bank-account.work');
 });
 
 Route::prefix('customer')->group(function () {

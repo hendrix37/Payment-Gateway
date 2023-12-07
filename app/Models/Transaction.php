@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $expired_date
  * @property string|null $link_payment
  * @property string|null $identity_owner
- * @property string|null $identity_driver
+ * @property string|null $identity_work
  * @property string|null $status
  * @property string|null $type
  * @property string|null $code_payment_gateway_relation
@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Bank|null $bank
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TransactionHistory> $histories
  * @property-read int|null $histories_count
+ *
  * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
@@ -60,7 +61,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction saldoDriver($id_driver)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction saldoDriver($id_work)
+ *
  * @mixin \Eloquent
  */
 class Transaction extends Model
@@ -86,7 +88,7 @@ class Transaction extends Model
         'expired_date',
         'link_payment',
         'identity_owner',
-        'identity_driver',
+        'identity_work',
         'status',
         'type',
         'code_payment_gateway_relation',
@@ -118,9 +120,9 @@ class Transaction extends Model
         return $saldo ?? 0;
     }
 
-    public function scopeSaldoDriver($query, $id_driver)
+    public function scopeSaldoDriver($query, $id_work)
     {
-        $saldo = $query->where('identity_driver', $id_driver)
+        $saldo = $query->where('identity_work', $id_work)
             ->where('status', StatusTypes::SUCCESSFUL)
             ->selectRaw('SUM(CASE 
                         WHEN type = "top_up" THEN amount 

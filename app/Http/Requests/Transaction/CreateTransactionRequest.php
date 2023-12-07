@@ -18,7 +18,7 @@ class CreateTransactionRequest extends FormRequest
             'expired_date' => ['required', 'date'],
             'link_payment' => ['nullable', 'string'],
             'identity_owner' => ['nullable', 'string'],
-            'identity_driver' => ['nullable', 'string'],
+            'identity_work' => ['nullable', 'string'],
             'status' => ['nullable', 'string'],
             'code_payment_gateway_relation' => ['nullable', 'string'],
             'json_callback' => ['nullable', 'string'],

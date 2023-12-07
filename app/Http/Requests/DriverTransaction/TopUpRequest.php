@@ -13,13 +13,13 @@ class TopUpRequest extends FormRequest
     {
         return [
             /**
-             * The id driver for the transaction.
+             * The id work for the transaction.
              *
              * @var string
              *
              * @example 64ce95d1ac3d33f73b7842821
              */
-            'iddriver' => ['required'],
+            'idwork' => ['required'],
 
             /**
              * The amount number for transaction.

@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $idempotency
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Database\Factories\WithdrawFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw newQuery()
@@ -36,9 +37,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereRemark($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereUuid($value)
+ *
  * @property-read \App\Models\Transaction $transaction
  * @property int $transaction_id
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Withdraw whereTransactionId($value)
+ *
  * @mixin \Eloquent
  */
 class Withdraw extends Model

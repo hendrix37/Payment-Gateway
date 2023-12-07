@@ -51,19 +51,18 @@ class TransactionOverview extends BaseWidget
                 ->chart($chartDataWithdrawSuccess)
                 ->color('success'),
 
-
-                Stat::make('Top-Up Failed', $transaction_top_up_failed)
+            Stat::make('Top-Up Failed', $transaction_top_up_failed)
                 ->description('Failed Top-Up Transactions')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->chart($chartDataTopUpFailed)
                 ->color('danger'),
-        
+
             Stat::make('Payment Failed', $transaction_pay_failed)
                 ->description('Failed Payment Transactions')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->chart($chartDataPayFailed)
                 ->color('danger'),
-        
+
             Stat::make('Withdrawal Failed', $transaction_withdraw_failed)
                 ->description('Failed Withdrawal Transactions')
                 ->descriptionIcon('heroicon-m-arrow-trending-down')

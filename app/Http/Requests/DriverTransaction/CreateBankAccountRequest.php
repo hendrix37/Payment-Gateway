@@ -33,13 +33,13 @@ class CreateBankAccountRequest extends FormRequest
             'bank_code' => ['required', 'string', 'exists:App\Models\Bank,code'],
 
             /**
-             * The driver's identity associated with the bank account.
+             * The work's identity associated with the bank account.
              *
              * @var string
              *
              * @example 64ce95d1ac3d33f73b7842821
              */
-            'iddriver' => ['required', 'string'],
+            'idwork' => ['required', 'string'],
         ];
     }
 }

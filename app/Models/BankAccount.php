@@ -16,11 +16,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $bank_id
  * @property string $account_number
  * @property string|null $identity_owner
- * @property string|null $identity_driver
+ * @property string|null $identity_work
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Bank $bank
+ *
  * @method static \Database\Factories\BankAccountFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newQuery()
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 class BankAccount extends Model
@@ -53,7 +55,7 @@ class BankAccount extends Model
         'bank_id',
         'account_number',
         'identity_owner',
-        'identity_driver',
+        'identity_work',
         'status',
     ];
 

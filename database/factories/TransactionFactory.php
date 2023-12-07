@@ -20,7 +20,7 @@ class TransactionFactory extends Factory
             'expired_date' => $this->faker->dateTime(),
             'link_payment' => $this->faker->firstName(),
             'identity_owner' => $this->faker->firstName(),
-            'identity_driver' => $this->faker->firstName(),
+            'identity_work' => $this->faker->firstName(),
             'status' => $this->faker->randomElement(StatusTypes::getAll()),
             'type' => $this->faker->randomElement(TransactionTypes::getAll()),
             'code_payment_gateway_relation' => $this->faker->firstName(),

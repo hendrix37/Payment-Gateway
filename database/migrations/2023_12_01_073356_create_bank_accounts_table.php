@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('bank_id')->constrained('banks');
             $table->string('account_number')->nullable();
             $table->string('identity_owner')->nullable();
-            $table->string('identity_driver')->nullable();
+            $table->string('identity_work')->nullable();
             $table->enum('status', StatusBank::getAll())->default(StatusBank::PENDING);
 
             $table->timestamps();

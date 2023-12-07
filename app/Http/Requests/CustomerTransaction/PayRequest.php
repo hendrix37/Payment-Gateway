@@ -9,23 +9,21 @@ class PayRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {
         return [
             /**
-             * The ID of the driver.
+             * The ID of the work.
              *
              * @var string
              *
              * @example 65021f344ecc865c068d84df
              */
-            'iddriver' => ['required', 'string'],
+            'idwork' => ['required', 'string'],
 
             /**
-             * The ID of the job owner related to the driver.
+             * The ID of the job owner related to the work.
              *
              * @var string
              *

@@ -23,6 +23,6 @@ class CheckSaldo implements Rule
         $amount = request()->doku;
         $text_number_format = number_format($amount);
 
-        return 'Saldo: ' . Transaction::saldoCustomer(request()->idowner) . ". You need for Pay $text_number_format. Your Balance is Low";
+        return 'Saldo: '.Transaction::saldoCustomer(request()->idowner).". You need for Pay $text_number_format. Your Balance is Low";
     }
 }

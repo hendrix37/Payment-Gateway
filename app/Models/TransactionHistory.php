@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Transaction $transaction
+ *
  * @method static \Database\Factories\TransactionHistoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionHistory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionHistory newQuery()
@@ -35,6 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionHistory whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionHistory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransactionHistory whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 class TransactionHistory extends Model

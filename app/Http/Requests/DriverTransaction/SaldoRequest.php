@@ -19,7 +19,7 @@ class SaldoRequest extends FormRequest
              *
              * @example 64ce95d1ac3d33f73b7842821
              */
-            'iddriver' => ['required'],
+            'idwork' => ['required'],
         ];
     }
 }

@@ -17,7 +17,7 @@ class BankAccountFactory extends Factory
             'bank_id' => Bank::inRandomOrder()->value('id'),
             'account_number' => $this->faker->randomNumber(9),
             'identity_owner' => $this->faker->firstName(),
-            'identity_driver' => $this->faker->firstName(),
+            'identity_work' => $this->faker->firstName(),
             'status' => $this->faker->randomElement(StatusBank::getAll()),
         ];
     }

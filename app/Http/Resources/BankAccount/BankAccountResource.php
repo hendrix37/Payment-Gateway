@@ -14,7 +14,7 @@ class BankAccountResource extends JsonResource
             'bank_id' => $this->bank_id,
             'account_number' => $this->account_number,
             'identity_owner' => $this->identity_owner,
-            'identity_driver' => $this->identity_driver,
+            'identity_work' => $this->identity_work,
             'status' => $this->status,
             'created_at' => dateTimeFormat($this->created_at),
             'updated_at' => dateTimeFormat($this->updated_at),

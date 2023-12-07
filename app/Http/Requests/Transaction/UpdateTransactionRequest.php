@@ -18,7 +18,7 @@ class UpdateTransactionRequest extends FormRequest
             'expired_date' => ['sometimes', 'date'],
             'link_payment' => ['sometimes', 'string'],
             'identity_owner' => ['nullable', 'string'],
-            'identity_driver' => ['nullable', 'string'],
+            'identity_work' => ['nullable', 'string'],
             'status' => ['sometimes', 'string'],
             'code_payment_gateway_relation' => ['sometimes', 'string'],
             'json_callback' => ['sometimes', 'string'],

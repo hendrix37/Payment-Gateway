@@ -38,11 +38,11 @@ class DriverTransactionController extends Controller
 
     public function saldo(SaldoRequest $request)
     {
-        $saldo = Transaction::saldoDriver($request->iddriver);
+        $saldo = Transaction::saldoDriver($request->idwork);
 
         $data = [
             'saldo' => $saldo,
-            'idowner' => $request->iddriver,
+            'idowner' => $request->idwork,
         ];
 
         return $this->responseSuccess('Get Saldo', $data);
@@ -62,11 +62,11 @@ class DriverTransactionController extends Controller
 
             $type = TransactionTypes::TOPUP;
 
-            $title = "TOPUP/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "TOPUP/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->iddriver;
+            $identity_work = $request->idwork;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 
@@ -84,7 +84,7 @@ class DriverTransactionController extends Controller
                 'expired_date' => Carbon::now()->addDay(),
                 'link_payment' => $response_flip['link_url'],
                 // 'identity_owner' => $identity_owner,
-                'identity_driver' => $identity_driver,
+                'identity_work' => $identity_work,
                 'status' => 'PENDING',
                 'type' => $type,
                 'code_payment_gateway_relation' => $response_flip['link_id'],
@@ -133,11 +133,11 @@ class DriverTransactionController extends Controller
 
             $type = TransactionTypes::PAY;
 
-            $title = "PAY/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
+            $title = "PAY/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             $amount = $request->doku;
             $identity_owner = $request->idowner;
-            $identity_driver = $request->iddriver;
+            $identity_work = $request->idwork;
             $biaya_penanganan = $request->bPenganan;
             $total_amount = $amount + $biaya_penanganan;
 
@@ -149,7 +149,7 @@ class DriverTransactionController extends Controller
                 'additional_cost' => $biaya_penanganan,
                 'expired_date' => Carbon::now()->addDay(),
                 'identity_owner' => $identity_owner,
-                'identity_driver' => $identity_driver,
+                'identity_work' => $identity_work,
                 'status' => StatusTypes::SUCCESSFUL,
                 'type' => $type,
             ];
@@ -189,7 +189,7 @@ class DriverTransactionController extends Controller
         try {
 
             $amount = $request->doku;
-            $identity_driver = $request->iddriver;
+            $identity_work = $request->idwork;
 
             $bank_account = BankAccount::find($request->bank_account_id);
             $bank = Bank::find($bank_account->bank_id);
@@ -205,8 +205,7 @@ class DriverTransactionController extends Controller
 
             $type = TransactionTypes::WITHDRAW;
 
-            $title = "WITHDRAW/$transaction_count/$transaction_count_today/" . Carbon::now()->format('YmdHis');
-
+            $title = "WITHDRAW/$transaction_count/$transaction_count_today/".Carbon::now()->format('YmdHis');
 
             // Generate Idempotency Key
             $idempotencyKey = bin2hex(random_bytes(16));
@@ -215,7 +214,7 @@ class DriverTransactionController extends Controller
             $createDisbursement = Http::withHeaders([
                 'Authorization' => $this->getAuthorization(),
                 'idempotency-key' => $title,
-            ])->post(config('flip.base_url_v3') . '/disbursement', [
+            ])->post(config('flip.base_url_v3').'/disbursement', [
                 'bank_code' => $bank->code,
                 'account_number' => $bank_account->account_number,
                 'amount' => $amount,
@@ -232,7 +231,7 @@ class DriverTransactionController extends Controller
                 'amount' => $amount,
                 'additional_cost' => $bank->fee,
                 'expired_date' => Carbon::now()->addDay(),
-                'identity_driver' => $identity_driver,
+                'identity_work' => $identity_work,
                 'status' => $response->status,
                 'type' => $type,
                 'code_payment_gateway_relation' => $response->id,
@@ -259,7 +258,7 @@ class DriverTransactionController extends Controller
 
             DB::commit();
 
-            $saldo = Transaction::saldoDriver($identity_driver);
+            $saldo = Transaction::saldoDriver($identity_work);
 
             $data = [
                 'amount' => $amount,
@@ -288,19 +287,18 @@ class DriverTransactionController extends Controller
         $records = Transaction::with([
             'histories',
         ])
-            ->where('identity_driver', $request->iddriver)
+            ->where('identity_work', $request->idwork)
             ->useFilters(filteredDTO: $filtersDTO)
             ->get();
 
         return TransactionResource::collection($records);
     }
 
-
     public function add_bank_account(CreateBankAccountRequest $request): JsonResponse
     {
         $check = BankAccount::where([
             ['account_number', $request->account_number],
-            ['identity_driver', $request->iddriver],
+            ['identity_work', $request->idwork],
             ['status', StatusBank::SUCCESS],
         ])->exists();
 
@@ -309,19 +307,19 @@ class DriverTransactionController extends Controller
         }
 
         Log::info('start Check account Number');
-        Log::info('request data : ' . json_encode($request->all()));
+        Log::info('request data : '.json_encode($request->all()));
         // Request Bank Info
         $requestBankInfo = Http::withHeaders([
             'Authorization' => $this->getAuthorization(),
             // 'Content-Type' => 'application/x-www-form-urlencoded',
-        ])->get(config('flip.base_url_v2') . '/general/banks?code=' . $request->bank_code);
+        ])->get(config('flip.base_url_v2').'/general/banks?code='.$request->bank_code);
 
         $bank = $requestBankInfo->object();
 
-        Log::info('requestBankInfo : ' . json_encode($bank));
+        Log::info('requestBankInfo : '.json_encode($bank));
 
         if ($bank[0]->status != 'OPERATIONAL') {
-            return back()->withInput()->with('error', 'SORRY, BANK ' . $bank[0]->status);
+            return back()->withInput()->with('error', 'SORRY, BANK '.$bank[0]->status);
         }
 
         $bank_collect = Bank::where('code', $request->bank_code)->first();
@@ -329,7 +327,7 @@ class DriverTransactionController extends Controller
         $data = [
             'bank_id' => $bank_collect->id,
             'account_number' => $request->account_number,
-            'identity_driver' => $request->iddriver,
+            'identity_work' => $request->idwork,
             'status' => StatusBank::PENDING,
         ];
 
@@ -341,7 +339,7 @@ class DriverTransactionController extends Controller
             // Request Bank Account Inquiry
             $dataRequest = Http::withHeaders([
                 'Authorization' => $this->getAuthorization(),
-            ])->post(config('flip.base_url_v2') . '/disbursement/bank-account-inquiry', [
+            ])->post(config('flip.base_url_v2').'/disbursement/bank-account-inquiry', [
                 'bank_code' => $request->bank_code,
                 'account_number' => $request->account_number,
                 'inquiry_key' => $bankAccount->uuid,
@@ -349,7 +347,7 @@ class DriverTransactionController extends Controller
 
             $response = $dataRequest->object();
 
-            Log::info('response bank check : ' . json_encode($response));
+            Log::info('response bank check : '.json_encode($response));
 
             foreach (StatusTypes::toArray() as $key => $value) {
                 if ($key == $response->status) {
@@ -370,13 +368,12 @@ class DriverTransactionController extends Controller
         }
     }
 
-
     public function list_bank_account(ListBankAccountRequest $request): JsonResponse
     {
         $bankAccounts = BankAccount::where([
-                ['identity_driver', $request->iddriver],
-                ['status', StatusBank::SUCCESS],
-            ])
+            ['identity_work', $request->idwork],
+            ['status', StatusBank::SUCCESS],
+        ])
             ->useFilters()
             ->dynamicPaginate();
 

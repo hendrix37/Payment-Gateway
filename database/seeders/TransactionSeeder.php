@@ -18,11 +18,9 @@ class TransactionSeeder extends Seeder
             'status' => StatusTypes::SUCCESSFUL,
         ]);
 
-
         Transaction::factory(30)->create([
             'status' => StatusTypes::PENDING,
         ]);
-
 
         Transaction::factory(20)->create([
             'status' => StatusTypes::FAILED,

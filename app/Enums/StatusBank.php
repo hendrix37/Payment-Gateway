@@ -61,6 +61,7 @@ class StatusBank extends Enum
     public static function getIcon(string $status): string
     {
         $icons = StatusBankIcons::$statusIcons;
+
         return $icons[$status] ?? 'heroicon-o-lock-closed';
     }
 }

@@ -2,26 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\StatusBank;
 use App\Enums\StatusBankColors;
 use App\Filament\Resources\BankAccountResource\Pages;
-use App\Filament\Resources\BankAccountResource\RelationManagers;
 use App\Models\Bank;
 use App\Models\BankAccount;
-use Filament\Forms;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use stdClass;
 
 class BankAccountResource extends Resource
@@ -47,7 +40,7 @@ class BankAccountResource extends Resource
                     ->schema([
                         TextInput::make('account_number'),
                         TextInput::make('identity_owner'),
-                        TextInput::make('identity_driver'),
+                        TextInput::make('identity_work'),
                     ]),
                 Section::make('Status')
                     ->schema([
@@ -74,7 +67,7 @@ class BankAccountResource extends Resource
                 TextColumn::make('bank.name'),
                 TextColumn::make('account_number'),
                 TextColumn::make('identity_owner'),
-                TextColumn::make('identity_driver'),
+                TextColumn::make('identity_work'),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => StatusBankColors::$statusColors[$state]),

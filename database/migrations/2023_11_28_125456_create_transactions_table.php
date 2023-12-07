@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamp('expired_date')->required();
             $table->string('link_payment')->nullable();
             $table->string('identity_owner')->nullable();
-            $table->string('identity_driver')->nullable();
+            $table->string('identity_work')->nullable();
             $table->enum('status', StatusTypes::toArray())->nullable();
             $table->enum('type', TransactionTypes::toArray())->nullable();
             $table->text('code_payment_gateway_relation')->nullable();
